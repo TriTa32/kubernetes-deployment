@@ -1,0 +1,33 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rabbit
+  namespace: myapp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rabbit
+  template:
+    metadata:
+      labels:
+        app: rabbit
+    spec:
+      containers:
+      - name: rabbit
+        image: rabbitmq:3.8-management-alpine
+        ports:
+        - containerPort: 5672
+        - containerPort: 15672
+        env:
+        - name: CLUSTERED
+          value: "true"
+        - name: RAM_NODE
+          value: "true"
+        - name: CLUSTER_WITH
+          value: rabbitmq
+        - name: RABBITMQ_DEFAULT_USER
+          value: docker
+        - name: RABBITMQ_DEFAULT_PASS
+          value: docker

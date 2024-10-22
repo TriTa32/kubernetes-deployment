@@ -1,0 +1,42 @@
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: service-two-db
+  namespace: myapp
+spec:
+  serviceName: "service-two-db"
+  replicas: 1
+  selector:
+    matchLabels:
+      app: service-two-db
+  template:
+    metadata:
+      labels:
+        app: service-two-db
+    spec:
+      containers:
+      - name: service-two-db
+        image: mysql/mysql-server:latest
+        ports:
+        - containerPort: 3306
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: root123
+        - name: MYSQL_DATABASE
+          value: service-two
+        - name: MYSQL_USER
+          value: service-two
+        - name: MYSQL_PASSWORD
+          value: service-two
+        volumeMounts:
+        - name: mysqldata
+          mountPath: /var/lib/mysql
+  volumeClaimTemplates:
+  - metadata:
+      name: mysqldata
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      resources:
+        requests:
+          storage: 1Gi

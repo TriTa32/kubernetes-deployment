@@ -1,0 +1,21 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-application
+  namespace: myapp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: web-application
+  template:
+    metadata:
+      labels:
+        app: web-application
+    spec:
+      containers:
+      - name: web-application
+        image: web-application:latest  # Replace with your actual image
+        ports:
+        - containerPort: 4200

@@ -1,0 +1,13 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: service-two
+  namespace: myapp
+spec:
+  selector:
+    app: service-two
+  ports:
+    - protocol: TCP
+      port: 8084
+      targetPort: 8084

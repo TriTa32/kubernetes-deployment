@@ -1,0 +1,43 @@
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: service-one-db
+  namespace: myapp
+spec:
+  serviceName: "service-one-db"
+  replicas: 1
+  selector:
+    matchLabels:
+      app: service-one-db
+  template:
+    metadata:
+      labels:
+        app: service-one-db
+    spec:
+      containers:
+      - name: service-one-db
+        image: mongo:3.7
+        ports:
+        - containerPort: 27017
+        env:
+        - name: MONGODB_USER
+          value: service-one
+        - name: MONGODB_PASS
+          value: service-one
+        - name: MONGO_DATA_DIR
+          value: /data/db
+        - name: MONGO_LOG_DIR
+          value: /dev/null
+        command: ["mongod", "--smallfiles"]
+        volumeMounts:
+        - name: mongodata
+          mountPath: /data/db
+  volumeClaimTemplates:
+  - metadata:
+      name: mongodata
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      resources:
+        requests:
+          storage: 1Gi
