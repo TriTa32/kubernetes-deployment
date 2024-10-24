@@ -16,6 +16,6 @@ spec:
     spec:
       containers:
       - name: web-application
-        image: 192.168.49.2:30400/web-application
+        image: localhost:30400/web-application:latest
         ports:
         - containerPort: 4200

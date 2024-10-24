@@ -2,23 +2,23 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: service-two
+  name: service-one
   namespace: myapp
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: service-two
+      app: service-one
   template:
     metadata:
       labels:
-        app: service-two
+        app: service-one
     spec:
       containers:
-      - name: service-two
-        image: 192.168.49.2:30400/service-two
+      - name: service-one
+        image: localhost:30400/service-one:latest
         ports:
-        - containerPort: 8084
+        - containerPort: 8082
         env:
         - name: SPRING_PROFILES_ACTIVE
           value: docker
