@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: api-gateway
-        image: 192.168.49.2:30400/api-gateway
+        image: https://192.168.49.2:30400/api-gateway
         ports:
         - containerPort: 8080
         env:
