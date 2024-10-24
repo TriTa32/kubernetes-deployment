@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: service-one
-        image: service-one:latest  # Replace with your actual image
+        image: 192.168.49.2:30400/service-one
         ports:
         - containerPort: 8082
         env:

@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: service-two
-        image: service-two:latest  # Replace with your actual image
+        image: 192.168.49.2:30400/service-two
         ports:
         - containerPort: 8084
         env:
