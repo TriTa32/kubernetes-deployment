@@ -1,4 +1,28 @@
 ---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kubectl-api-gateway-context
+data:
+  kubectl-config-context.sh: |-
+    #!/bin/bash -v
+
+    # Use service account token for authentication
+    kubectl config set-credentials api-gateway-user --token=$(cat /var/run/secrets/kubernetes.io/serviceaccount/token)
+
+    # Set cluster information (update the server IP and port accordingly)
+    kubectl config set-cluster api-gateway-cluster --server="https://192.168.49.2:30400" --certificate-authority="/var/run/secrets/kubernetes.io/serviceaccount/ca.crt"
+
+    # Set the context for managing the 'api-gateway' in the 'myapp' namespace
+    kubectl config set-context api-gateway-context --cluster=api-gateway-cluster --user=api-gateway-user --namespace=myapp
+
+    # Switch to this new context
+    kubectl config use-context api-gateway-context
+
+    # Ensure proper file permissions
+    chmod 755 ~/.kube/config
+
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
