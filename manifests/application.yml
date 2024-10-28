@@ -68,37 +68,28 @@ spec:
         env:
         - name: SPRING_PROFILES_ACTIVE
           value: docker
-        # Add RabbitMQ configuration
-        - name: SPRING_RABBITMQ_HOST
-          value: "rabbitmq"
-        - name: SPRING_RABBITMQ_PORT
-          value: "5672"
-        - name: SPRING_RABBITMQ_USERNAME
-          value: "docker"
-        - name: SPRING_RABBITMQ_PASSWORD
-          value: "docker"
-        - name: SPRING_RABBITMQ_VIRTUAL_HOST
-          value: "/"
-        # Add health check
-        readinessProbe:
-          httpGet:
-            path: /actuator/health
+        # Add startup probe to give RabbitMQ time to initialize
+        startupProbe:
+          tcpSocket:
             port: 8082
-          initialDelaySeconds: 30
+          failureThreshold: 30
           periodSeconds: 10
-        livenessProbe:
-          httpGet:
-            path: /actuator/health
+        # Add readiness probe
+        readinessProbe:
+          tcpSocket:
             port: 8082
-          initialDelaySeconds: 60
-          periodSeconds: 20
-        resources:
-          requests:
-            memory: "256Mi"
-            cpu: "250m"
-          limits:
-            memory: "512Mi"
-            cpu: "500m"
+          initialDelaySeconds: 20
+          periodSeconds: 10
+        # Add dependency check
+        initContainers:
+        - name: wait-for-rabbitmq
+          image: busybox
+          command: ['sh', '-c', 'until wget -T 5 --spider http://rabbitmq:15672/api/health/checks/virtual-hosts; do echo waiting for rabbitmq; sleep 2; done;']
+      # Add DNS config to improve service discovery
+      dnsConfig:
+        options:
+          - name: ndots
+            value: "1"
 
 ---
 apiVersion: v1
