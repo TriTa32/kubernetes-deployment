@@ -60,6 +60,11 @@ spec:
       labels:
         app: service-one
     spec:
+      # Move initContainers here, at the same level as containers
+      initContainers:
+      - name: wait-for-rabbitmq
+        image: busybox
+        command: ['sh', '-c', 'until wget -T 5 --spider http://rabbitmq:15672/api/health/checks/virtual-hosts; do echo waiting for rabbitmq; sleep 2; done;']
       containers:
       - name: service-one
         image: localhost:30400/service-one:latest
@@ -68,24 +73,16 @@ spec:
         env:
         - name: SPRING_PROFILES_ACTIVE
           value: docker
-        # Add startup probe to give RabbitMQ time to initialize
         startupProbe:
           tcpSocket:
             port: 8082
           failureThreshold: 30
           periodSeconds: 10
-        # Add readiness probe
         readinessProbe:
           tcpSocket:
             port: 8082
           initialDelaySeconds: 20
           periodSeconds: 10
-        # Add dependency check
-        initContainers:
-        - name: wait-for-rabbitmq
-          image: busybox
-          command: ['sh', '-c', 'until wget -T 5 --spider http://rabbitmq:15672/api/health/checks/virtual-hosts; do echo waiting for rabbitmq; sleep 2; done;']
-      # Add DNS config to improve service discovery
       dnsConfig:
         options:
           - name: ndots
