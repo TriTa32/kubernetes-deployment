@@ -253,6 +253,16 @@ spec:
       labels:
         app: web-application
     spec:
+      initContainers:
+      - name: wait-for-api-gateway
+        image: busybox
+        command: ['sh', '-c', 'until nc -z api-gateway 8080; do echo waiting for api-gateway; sleep 2; done']
+      - name: wait-for-service-one
+        image: busybox
+        command: ['sh', '-c', 'until nc -z service-one 8082; do echo waiting for service-one; sleep 2; done']
+      - name: wait-for-service-two
+        image: busybox
+        command: ['sh', '-c', 'until nc -z service-two 8084; do echo waiting for service-two; sleep 2; done']
       containers:
       - name: web-application
         image: localhost:30400/web-application:latest
