@@ -4,55 +4,36 @@ kind: Namespace
 metadata:
   name: myapp
 
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: rabbitmq  
+  name: logstash
   namespace: myapp
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: rabbit
+      app: logstash
   template:
     metadata:
       labels:
-        app: rabbit
+        app: logstash
     spec:
       containers:
-      - name: rabbit
-        image: rabbitmq:3.8-management-alpine
+      - name: logstash
+        image: docker.elastic.co/logstash/logstash:7.12.0  # Replace with your version
         ports:
-        - containerPort: 5672
-        - containerPort: 15672
+        - containerPort: 5000
         env:
-        - name: CLUSTERED
-          value: "true"
-        - name: RAM_NODE
-          value: "true"
-        - name: RABBITMQ_DEFAULT_USER
-          value: docker
-        - name: RABBITMQ_DEFAULT_PASS
-          value: docker
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: rabbitmq
-  namespace: myapp
-spec:
-  selector:
-    app: rabbit
-  ports:
-    - name: amqp
-      protocol: TCP
-      port: 5672
-      targetPort: 5672
-    - name: management
-      protocol: TCP
-      port: 15672
-      targetPort: 15672
+        - name: LOGSTASH_SETTINGS_DIR
+          value: /usr/share/logstash/config
+        volumeMounts:
+        - name: logstash-config
+          mountPath: /usr/share/logstash/config
+      volumes:
+      - name: logstash-config
+        configMap:
+          name: logstash-config  # Optional ConfigMap for custom configuration
 
 ---
 apiVersion: apps/v1
@@ -323,6 +304,55 @@ spec:
       port: 80
       targetPort: 4200
 
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rabbitmq  
+  namespace: myapp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rabbit
+  template:
+    metadata:
+      labels:
+        app: rabbit
+    spec:
+      containers:
+      - name: rabbit
+        image: rabbitmq:3.8-management-alpine
+        ports:
+        - containerPort: 5672
+        - containerPort: 15672
+        env:
+        - name: CLUSTERED
+          value: "true"
+        - name: RAM_NODE
+          value: "true"
+        - name: RABBITMQ_DEFAULT_USER
+          value: docker
+        - name: RABBITMQ_DEFAULT_PASS
+          value: docker
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rabbitmq
+  namespace: myapp
+spec:
+  selector:
+    app: rabbit
+  ports:
+    - name: amqp
+      protocol: TCP
+      port: 5672
+      targetPort: 5672
+    - name: management
+      protocol: TCP
+      port: 15672
+      targetPort: 15672
 
 ---
 apiVersion: apps/v1
