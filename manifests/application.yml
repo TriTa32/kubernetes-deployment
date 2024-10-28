@@ -300,8 +300,6 @@ spec:
           value: "true"
         - name: RAM_NODE
           value: "true"
-        - name: CLUSTER_WITH
-          value: rabbitmq
         - name: RABBITMQ_DEFAULT_USER
           value: docker
         - name: RABBITMQ_DEFAULT_PASS
