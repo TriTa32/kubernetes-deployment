@@ -491,7 +491,7 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: myapp-ingress
+  name: ingress
   namespace: myapp
   annotations:
     nginx.ingress.kubernetes.io/ssl-redirect: "false"
@@ -512,7 +512,7 @@ spec:
               number: 8080
               
       # Services with specific paths
-      - path: /service-one/?(.*)
+      - path: /service-one
         pathType: Prefix
         backend:
           service:
@@ -520,7 +520,7 @@ spec:
             port: 
               number: 8080
               
-      - path: /service-two/?(.*)
+      - path: /service-two
         pathType: Prefix
         backend:
           service:
@@ -529,10 +529,10 @@ spec:
               number: 8080
               
       # Web application should be last as it's the catch-all route
-      - path: /?(.*)
+      - path: /
         pathType: Prefix
         backend:
           service:
             name: web-application
             port: 
-              number: 8080
+              number: 80
