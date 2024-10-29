@@ -145,7 +145,7 @@ spec:
           value: /data/db
         - name: MONGO_LOG_DIR
           value: /dev/null
-        command: ["mongod", "--smallfiles"]
+        command: ["mongod", "--bind_ip_all"]
         volumeMounts:
         - name: mongodata
           mountPath: /data/db
