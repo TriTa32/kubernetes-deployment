@@ -503,7 +503,7 @@ spec:
   - http:
       paths:
       # API Gateway should be first as it's likely the most used
-      - path: /api/?(.*)
+      - path: /api
         pathType: Prefix
         backend:
           service:
