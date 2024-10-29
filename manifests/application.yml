@@ -502,7 +502,7 @@ spec:
   rules:
   - http:
       paths:
-      - path: /api(/|$)(.*)
+      - path: /api
         pathType: Prefix
         backend:
           service:
@@ -510,7 +510,7 @@ spec:
             port: 
               number: 8080
               
-      - path: /service-one(/|$)(.*)
+      - path: /service-one
         pathType: Prefix
         backend:
           service:
@@ -518,7 +518,7 @@ spec:
             port: 
               number: 8082
               
-      - path: /service-two(/|$)(.*)
+      - path: /service-two
         pathType: Prefix
         backend:
           service:
@@ -526,7 +526,7 @@ spec:
             port: 
               number: 8084
               
-      - path: /(.*)
+      - path: /
         pathType: Prefix
         backend:
           service:
