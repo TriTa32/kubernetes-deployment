@@ -502,8 +502,7 @@ spec:
   rules:
   - http:
       paths:
-      # API Gateway should be first as it's likely the most used
-      - path: /api
+      - path: /api(/|$)(.*)
         pathType: Prefix
         backend:
           service:
@@ -511,25 +510,23 @@ spec:
             port: 
               number: 8080
               
-      # Services with specific paths
-      - path: /service-one
+      - path: /service-one(/|$)(.*)
         pathType: Prefix
         backend:
           service:
             name: service-one
             port: 
-              number: 8080
+              number: 8082
               
-      - path: /service-two
+      - path: /service-two(/|$)(.*)
         pathType: Prefix
         backend:
           service:
             name: service-two
             port: 
-              number: 8080
+              number: 8084
               
-      # Web application should be last as it's the catch-all route
-      - path: /
+      - path: /(.*)
         pathType: Prefix
         backend:
           service:
