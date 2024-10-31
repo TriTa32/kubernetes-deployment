@@ -291,8 +291,6 @@ kind: Deployment
 metadata:
   name: web-application
   namespace: myapp
-  labels:
-    app: web-application
 spec:
   replicas: 1
   selector:
@@ -304,23 +302,30 @@ spec:
         app: web-application
     spec:
       containers:
-      - name: web-application
-        image: localhost:30400/web-application:latest
-        ports:
-        - containerPort: 4200
+        - name: web-application
+          image: localhost:30400/web-application:latest
+          ports:
+            - containerPort: 80
+          resources:
+            limits:
+              memory: "128Mi"
+              cpu: "500m"
+
 ---
+# Service for web-application
 apiVersion: v1
 kind: Service
 metadata:
   name: web-application
   namespace: myapp
 spec:
-  type: NodePort
   ports:
-  - port: 80
-    targetPort: 4200
+    - port: 80
+      targetPort: 80
   selector:
     app: web-application
+  type: ClusterIP
+
 ---
 # ---------------------------
 # RabbitMQ Deployment and Service
